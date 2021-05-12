@@ -44,7 +44,7 @@ def transformation():
 
 if __name__ == '__main__':
     
-    schedule.every(30).minutes.do(geeks)
+    schedule.every(30).minutes.do(transformation)
     while True:
         schedule.run_pending()
         time.sleep(1)
