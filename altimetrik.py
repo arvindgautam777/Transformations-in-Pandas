@@ -1,3 +1,6 @@
+import pandas as pd
+import re
+import schedule
 
 def check_age(age):
     if pd.isna(age):
@@ -13,26 +16,36 @@ def check_age(age):
         
 def class_selection(cabin):
     if pd.isna(cabin):
-        return "Second Class"
+        return "Not mentioned"
     else:
         if re.match(r'^C.', cabin):
             return 'First Class'
         else:
             return 'Second Class'
 
-def gender(na):
-    if re.findall("(Mrs\.|Miss\.)", na):
+def gender(name):
+    if re.findall("(Mrs\.|Miss\.)", name):
         return 'Female'
-    elif re.findall("Mr\.", na):
+    elif re.findall("Mr\.", name):
         return 'Male'
     else:
         return 'Not Specified'
 
-df = pd.read_excel(r'MyCruiseData.xlsx')
-df['Last_Name'] = df['Name'].apply(lambda x: x.split(',')[0])
-df['First_Name'] = df['Name'].apply(lambda x: x.split(',')[1].split('(')[0])
-df['Called_as'] = df['Name'].str.extract(r"\((\w.*)\)")
-df['Group'] = df['Age'].apply(check_age)
-df['Class'] = df['Cabin'].apply(class_selection)
-df['Gender'] = df['Name'].apply(gender)
-df.to_csv('TitanicOutput.csv', index = False)    
+def transformation():
+    df = pd.read_excel(r'MyCruiseData.xlsx')
+    df['Last_Name'] = df['Name'].apply(lambda x: x.split(',')[0])
+    df['First_Name'] = df['Name'].apply(lambda x: x.split(',')[1].split('(')[0])
+    df['Called_as'] = df['Name'].str.extract(r"\((\w.*)\)")
+    df['Group'] = df['Age'].apply(check_age)
+    df['Class'] = df['Cabin'].apply(class_selection)
+    df['Gender'] = df['Name'].apply(gender)
+    df.to_csv('TitanicOutput.csv', index = False)  
+    print('Process Completed')
+
+if __name__ == '__main__':
+    
+    schedule.every(30).minutes.do(geeks)
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
+
